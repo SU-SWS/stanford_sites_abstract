@@ -10,7 +10,7 @@
 /**
  * Implements hook_install().
  */
-function stanford_sites_jumpstart_install() {
+function stanford_sites_abstract_install() {
   // Please do not use this function. Create installation tasks from within
   // the installation profile class JumpstartSites.php
 }
@@ -18,7 +18,7 @@ function stanford_sites_jumpstart_install() {
 /**
  * Implements hook_install_finished()
  */
-function stanford_sites_jumpstart_install_finished() {
+function stanford_sites_abstract_install_finished() {
   // Flush all caches.
   drupal_flush_all_caches();
 }
@@ -26,7 +26,7 @@ function stanford_sites_jumpstart_install_finished() {
 /**
  * Implements hook_requirements().
  */
-function stanford_sites_jumpstart_requirements($phase) {
+function stanford_sites_abstract_requirements($phase) {
   $requirements = array();
   return $requirements;
 }

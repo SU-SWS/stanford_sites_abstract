@@ -38,6 +38,7 @@ prohibit[] = toolbar
 ; Includes and Profile Classes.
 files[] = includes/JumpstartProfileInterface.php
 files[] = includes/JumpstartProfile.php
+files[] = includes/JumpstartProfileAbstract.php
 files[] = includes/libraries/profiler/profiler.inc
 files[] = includes/libraries/profiler/profiler_api.inc
 files[] = stanford_sites_abstract.install

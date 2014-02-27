@@ -25,22 +25,10 @@ if (!function_exists('drush_log')) {
 }
 
 /**
- * Implements hook_install_tasks().
- * This only gets called when installing this specific class. Gathers up install
- * tasks of parent profiles and puts the all in order.
- */
-function stanford_sites_abstract_install_tasks(&$install_state) {
-  $tasks = array();
-  $profile = new JumpstartSites();
-  $tasks = $profile->get_install_tasks($install_state);
-  return $tasks;
-}
-
-/**
  * Implements hook_install_tasks_alter().
  */
 function stanford_sites_abstract_install_tasks_alter(&$tasks, &$install_state) {
-  $profile = new JumpstartSites();
+  $profile = new JumpstartProfileAbstract();
   $profile->install_tasks_alter($tasks, $install_state);
   $profile->prepare_task_handlers($install_state);
 }
@@ -52,7 +40,7 @@ function stanford_sites_abstract_install_tasks_alter(&$tasks, &$install_state) {
  * @return array a list of modules to install.
  */
 function stanford_sites_abstract_install_profile_modules(&$install_state) {
-  $profile_name = JumpstartProfile::get_active_profile();
+  $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
   return $profile->install_profile_modules($install_state);
 }
@@ -64,7 +52,7 @@ function stanford_sites_abstract_install_profile_modules(&$install_state) {
  * @return mixed html output if there are any errors or nothing if gravy.
  */
 function stanford_sites_abstract_verify_requirements(&$install_state) {
-  $profile_name = JumpstartSites::get_active_profile();
+  $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
   return $profile->verify_requirements($install_state);
 }
@@ -114,7 +102,7 @@ function stanford_sites_abstract_install_standard_profile(&$install_state) {
  * @param  [array] $form_state [the form state array]
  */
 function stanford_sites_abstract_form_install_configure_form_alter(&$form, &$form_state) {
-  $profile_name = JumpstartSites::get_active_profile();
+  $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
   $form = $profile->get_config_form($form, $form_state);
 }
@@ -126,7 +114,7 @@ function stanford_sites_abstract_form_install_configure_form_alter(&$form, &$for
  * @param  [array] $form_state [the form state array]
  */
 function stanford_sites_abstract_form_install_configure_form_alter_validate($form, &$form_state) {
-  $profile_name = JumpstartSites::get_active_profile();
+  $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
   $profile->get_config_form_validate($form, $form_sate);
 }
@@ -138,7 +126,7 @@ function stanford_sites_abstract_form_install_configure_form_alter_validate($for
  * @param  [array] $form_state [the form state array]
  */
 function stanford_sites_abstract_form_install_configure_form_alter_submit($form, &$form_state) {
-  $profile_name = JumpstartSites::get_active_profile();
+  $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
   $profile->get_config_form_submit($form, $form_sate);
 }

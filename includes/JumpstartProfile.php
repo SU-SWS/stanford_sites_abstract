@@ -116,10 +116,10 @@ abstract class JumpstartProfile {
     $tasks['install_configure_form']['display_name'] = "Configuration";
 
     // Take over the module installation task so we can run it on all profiles.
-    $tasks['install_profile_modules']['function'] = "stanford_sites_jumpstart_install_profile_modules";
+    $tasks['install_profile_modules']['function'] = "stanford_sites_abstract_install_profile_modules";
 
     // Override the requirements task so we may check all profiles.
-    $tasks['install_verify_requirements']['function'] = "stanford_sites_jumpstart_verify_requirements";
+    $tasks['install_verify_requirements']['function'] = "stanford_sites_abstract_verify_requirements";
 
     // The Stanford profile requires that the standard profile be installed so lets
     // do that prior to installing the other dependencies.
@@ -130,7 +130,7 @@ abstract class JumpstartProfile {
       'display_name' => st('Install Standard Assets.'),
       'display' => TRUE,
       'type' => 'batch',
-      'function' => 'stanford_sites_jumpstart_install_standard_profile_modules',
+      'function' => 'stanford_sites_abstract_install_standard_profile_modules',
       'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
     );
 
@@ -140,7 +140,7 @@ abstract class JumpstartProfile {
       'display_name' => st('Execute Install'),
       'display' => FALSE,
       'type' => 'normal',
-      'function' => 'stanford_sites_jumpstart_install_standard_profile',
+      'function' => 'stanford_sites_abstract_install_standard_profile',
       'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
     );
 
