@@ -105,6 +105,7 @@ function stanford_sites_abstract_form_install_configure_form_alter(&$form, &$for
   $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
   $form = $profile->get_config_form($form, $form_state);
+  return $form;
 }
 
 /**

@@ -22,6 +22,14 @@ class JumpstartProfileAbstract extends JumpstartProfile {
       'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
     );
 
+    $tasks['stanford_sites_abstract_disable_modules'] = array(
+      'display_name' => st('JumpstartAbstract - Disable Modules.'),
+      'display' => FALSE,
+      'type' => 'normal',
+      'function' => 'disable_modules',
+      'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+    );
+
     // Prepare class callback.
     $this->prepare_tasks($tasks, get_class());
     return $tasks;
@@ -76,5 +84,31 @@ class JumpstartProfileAbstract extends JumpstartProfile {
   public function stanford_profile_install_tasks($install_state) {
     stanford_sites_tasks($install_state);
   }
+
+  /**
+   * Disable and uninstall some modules that we no longer need.
+   *
+   * Only specifically are we going to disable them. No dependants.
+   * @param  [array] $install_state [the current installation state]
+   */
+  public function disable_modules(&$install_state) {
+    drupal_flush_all_caches();
+
+    // We need to disable anything installed by standard directly as it is a
+    // special case and we cannot use prohibit for them.
+    $disable_these_modules = array(
+      'stanford_wysiwyg',
+      'toolbar',
+      'comment',
+      'clone',
+      'overlay',
+      'dashboard',
+    );
+
+    // Disable and uninstall only the moduels we want. Not the dependants.
+    module_disable($disable_these_modules, FALSE);
+    drupal_uninstall_modules($disable_these_modules, FALSE);
+  }
+
 
 }
