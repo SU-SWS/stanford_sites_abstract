@@ -32,8 +32,15 @@ dependencies[] = context_useragent
 
 ; Do not enable these modules during installation. Disables all
 ; parent dependency declarations
-prohibit[] = stanford_wysiwyg
-prohibit[] = toolbar
+
+# These modules get disabled in an installation task and cannot be disabled here.
+# prohibit[] = stanford_wysiwyg
+# prohibit[] = toolbar
+# prohibit[] = comment
+# prohibit[] = clone
+# prohibit[] = overlay
+# prohibit[] = dashboard
+# prohibit[] = shortcut
 
 ; Includes and Profile Classes.
 files[] = includes/JumpstartProfileInterface.php

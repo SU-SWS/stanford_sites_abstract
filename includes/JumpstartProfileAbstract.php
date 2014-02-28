@@ -103,6 +103,7 @@ class JumpstartProfileAbstract extends JumpstartProfile {
       'clone',
       'overlay',
       'dashboard',
+      'shortcut',
     );
 
     // Disable and uninstall only the moduels we want. Not the dependants.
