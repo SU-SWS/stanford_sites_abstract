@@ -7,7 +7,8 @@
 class JumpstartProfileAbstract extends JumpstartProfile {
 
   /**
-   * [get_install_tasks description]
+   * Returns a list of tasks to run during installation. These run
+   * after standard and stanford but before the inheritable profiles.
    * @param  [type] $install_state [description]
    * @return [type]                [description]
    */
@@ -27,6 +28,14 @@ class JumpstartProfileAbstract extends JumpstartProfile {
       'display' => FALSE,
       'type' => 'normal',
       'function' => 'disable_modules',
+      'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+    );
+
+    $tasks['stanford_sites_abstract_install_config'] = array(
+      'display_name' => st('JumpstartAbstract - Install Config.'),
+      'display' => FALSE,
+      'type' => 'normal',
+      'function' => 'install_config',
       'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
     );
 
@@ -109,6 +118,19 @@ class JumpstartProfileAbstract extends JumpstartProfile {
     // Disable and uninstall only the moduels we want. Not the dependants.
     module_disable($disable_these_modules, FALSE);
     drupal_uninstall_modules($disable_these_modules, FALSE);
+  }
+
+  /**
+   * Installation tasks to fix anything that standard and stanford did that
+   * we do not want for any of our work.
+   */
+  public function install_config() {
+
+    // This variable is set in the stanford installation profile and causes
+    // havoc when installing through drush. Re-enable later.
+    variable_del('file_private_path');
+
+    // variable_set('file_private_path', 'sites/default/files/private');
   }
 
 
