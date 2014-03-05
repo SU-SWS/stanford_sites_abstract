@@ -3,6 +3,7 @@ distribution_name = "Stanford Jumpstart"
 description = "An Abstract profile of commonalities to never be installed."
 core = 7.x
 version = 7.x-1.x
+hidden = TRUE
 
 ; Jumpstart Extra Information
 base = stanford
