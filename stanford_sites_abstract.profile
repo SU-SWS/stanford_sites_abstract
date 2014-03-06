@@ -117,7 +117,7 @@ function stanford_sites_abstract_form_install_configure_form_alter(&$form, &$for
 function stanford_sites_abstract_form_install_configure_form_alter_validate($form, &$form_state) {
   $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
-  $profile->get_config_form_validate($form, $form_sate);
+  $profile->get_config_form_validate($form, $form_state);
 }
 
 /**
@@ -129,7 +129,7 @@ function stanford_sites_abstract_form_install_configure_form_alter_validate($for
 function stanford_sites_abstract_form_install_configure_form_alter_submit($form, &$form_state) {
   $profile_name = JumpstartProfileAbstract::get_active_profile();
   $profile = new $profile_name();
-  $profile->get_config_form_submit($form, $form_sate);
+  $profile->get_config_form_submit($form, $form_state);
 }
 
 
