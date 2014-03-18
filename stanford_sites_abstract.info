@@ -30,6 +30,8 @@ dependencies[] = webauth_extras
 dependencies[] = wysiwyg
 dependencies[] = context_http_header
 dependencies[] = context_useragent
+dependencies[] = token
+dependencies[] = entity_token
 
 ; Do not enable these modules during installation. Disables all
 ; parent dependency declarations
