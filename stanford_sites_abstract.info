@@ -2,7 +2,7 @@ name = "Stanford Sites Abstract"
 distribution_name = "Stanford Jumpstart"
 description = "An Abstract profile of commonalities to never be installed."
 core = 7.x
-version = 7.x-1.0-alpha1
+version = 7.x-1.0-alpha2
 hidden = TRUE
 
 ; Jumpstart Extra Information
