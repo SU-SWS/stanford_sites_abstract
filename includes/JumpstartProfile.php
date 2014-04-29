@@ -178,6 +178,11 @@ abstract class JumpstartProfile {
       $info_file = drupal_get_path('profile', $profile['machine_name']) . "/" . $profile['machine_name'] . ".info";
       $install_state['profile_info'] = drupal_parse_info_file($info_file);
 
+      // When we prohibit a dependency we should remove it from the requirements
+      // check so that sites can install without the prohibited module existing.
+
+      $this->remove_prohibits_from_requirements($install_state, $tree);
+
       $errors = install_verify_requirements($install_state);
 
       if ($errors) {
@@ -194,6 +199,33 @@ abstract class JumpstartProfile {
     }
 
   }
+
+  /**
+   * When we prohibit a dependency we should remove it from the requirements
+   * check so that sites can install without the prohibited module existing.
+   * @todo: Make prohibit values statically available.
+   *
+   * @param  [type] $install_state [description]
+   * @param   $tree the tree of installation profiles.
+   */
+  protected function remove_prohibits_from_requirements(&$install_state, $tree) {
+
+    $prohibits = array();
+    foreach ($tree as $id => $profile) {
+      if (isset($profile['prohibit'])) {
+        $prohibits = $prohibits + $profile['prohibit'];
+      }
+     }
+
+    // Remove all dependencies that are prohibited.
+    $dependencies = $install_state['profile_info']['dependencies'];
+    $cleaned = array_diff($dependencies, $prohibits);
+
+    // Set dependencies to cleaned.
+    $install_state['profile_info']['dependencies'] = $cleaned;
+
+  }
+
 
 
   /**
@@ -356,6 +388,7 @@ abstract class JumpstartProfile {
 
   /**
    * This fun function evaluates some generated code. YAK!.
+   * @todo KILL THIS WITH FIRE
    *
    * Drupal installation tasks require a valid global callback. This creates
    * those and calls into the class in which they were defined.
