@@ -39,6 +39,14 @@ class JumpstartProfileAbstract extends JumpstartProfile {
       'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
     );
 
+    $tasks['stanford_sites_abstract_revert_all_features'] = array(
+      'display_name' => st('JumpstartAbstract - Revert Features.'),
+      'display' => FALSE,
+      'type' => 'normal',
+      'function' => 'revert_all_features',
+      'run' => INSTALL_TASK_RUN_IF_NOT_COMPLETED,
+    );
+
     // Prepare class callback.
     $this->prepare_tasks($tasks, get_class());
     return $tasks;
@@ -94,6 +102,9 @@ class JumpstartProfileAbstract extends JumpstartProfile {
     stanford_sites_tasks($install_state);
   }
 
+  // ---------------------------------------------------------------------------
+  // ---------------------------------------------------------------------------
+
   /**
    * Disable and uninstall some modules that we no longer need.
    *
@@ -120,6 +131,8 @@ class JumpstartProfileAbstract extends JumpstartProfile {
     drupal_uninstall_modules($disable_these_modules, FALSE);
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Installation tasks to fix anything that standard and stanford did that
    * we do not want for any of our work.
@@ -131,6 +144,19 @@ class JumpstartProfileAbstract extends JumpstartProfile {
     variable_del('file_private_path');
 
     // variable_set('file_private_path', 'sites/default/files/private');
+  }
+
+  // ---------------------------------------------------------------------------
+
+  /**
+   * If features exists revert all of them.
+   * @param  [type] $install_state [description]
+   */
+  public function revert_all_features(&$install_state) {
+    if (module_exists('features') || function_exists('features_revert')) {
+      drush_log('Reverting all of the features.', 'status');
+      features_revert();
+    }
   }
 
 
