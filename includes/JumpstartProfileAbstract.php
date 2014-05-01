@@ -229,7 +229,7 @@ class JumpstartProfileAbstract extends JumpstartProfile {
   * 'admin_title' : Administrative title of the Menu Position rule. Human-readable.
   * 'conditions' : multidimensional array of Menu Position conditions
   */
-  private function insert_menu_rule($mp_rule) {
+  protected function insert_menu_rule($mp_rule) {
     module_load_include('inc', 'menu_position', 'menu_position.admin');
 
     // Get the mlid of the parent link.
