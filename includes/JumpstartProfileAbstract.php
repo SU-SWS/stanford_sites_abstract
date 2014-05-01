@@ -182,10 +182,10 @@ class JumpstartProfileAbstract extends JumpstartProfile {
 
     // Initialize! Alive!
     foreach ($views as $view) {
-      $view->save();
+      $view->save(); // this unfortunately enables (turns on) the view as well.
     }
 
-    drush_log('Saved Views For Menu Import.', 'ok');
+    drush_log('Saved Views For Menu System.', 'ok');
   }
 
   // ---------------------------------------------------------------------------
