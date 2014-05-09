@@ -97,6 +97,8 @@ abstract class JumpstartProfile {
     return $info_files;
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Implements hook_install_tasks_alter()
    * Heavily alters the installation process. Overrides core tasks, adds new
@@ -158,6 +160,8 @@ abstract class JumpstartProfile {
 
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Overrides core install_verify_requirements so that we can ensure all
    * profiles meet their requirements.
@@ -200,6 +204,8 @@ abstract class JumpstartProfile {
 
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * When we prohibit a dependency we should remove it from the requirements
    * check so that sites can install without the prohibited module existing.
@@ -226,7 +232,7 @@ abstract class JumpstartProfile {
 
   }
 
-
+  // ---------------------------------------------------------------------------
 
   /**
    * Returns an array of profiles in order from the top most parent to the
@@ -260,6 +266,8 @@ abstract class JumpstartProfile {
     return $tree;
 
   }
+
+  // ---------------------------------------------------------------------------
 
   /**
    * This function overrides the core install_profile_modules task so that it
@@ -295,6 +303,8 @@ abstract class JumpstartProfile {
 
     return $batch;
   }
+
+  // ---------------------------------------------------------------------------
 
   /**
    * This function is a little hack to ensure all the correct modules are ready.
@@ -337,6 +347,8 @@ abstract class JumpstartProfile {
     variable_set('install_profile_modules', array_unique($modules));
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * This function scans all of the profiles .info files for file declarations
    * and loads them as sometimes they are not always available.
@@ -364,6 +376,8 @@ abstract class JumpstartProfile {
     self::$called_once = TRUE;
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Set the active class that is to be installed.
    *
@@ -378,6 +392,8 @@ abstract class JumpstartProfile {
     self::$active_class = $class_name;
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Returns the active profile that is being installed.
    * @return string. The name of the class that is to be installed.
@@ -385,6 +401,8 @@ abstract class JumpstartProfile {
   static public function get_active_profile() {
     return self::$active_class;
   }
+
+  // ---------------------------------------------------------------------------
 
   /**
    * This fun function evaluates some generated code. YAK!.
@@ -433,6 +451,8 @@ abstract class JumpstartProfile {
     eval($code);
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Prepares the installation tasks for running. In this case it ensures
    * uniqueness through class name prefixing of the task key as well as altering
@@ -469,6 +489,8 @@ abstract class JumpstartProfile {
     $tasks = $parsed_tasks;
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Returns a boolean value to wether the current installation is on the
    * Stanford Sites environment or not.
@@ -491,6 +513,8 @@ abstract class JumpstartProfile {
 
   }
 
+  // ---------------------------------------------------------------------------
+
   /**
    * Specifically Set wether this installation is on the Stanford Sites
    * environment or not.
@@ -505,5 +529,123 @@ abstract class JumpstartProfile {
     $this->is_sites_environment = $value;
     return TRUE;
   }
+
+   // ---------------------------------------------------------------------------
+
+  /**
+   * Menu imports process does not find any paths from views defined in
+   * features at this point. We will need to make it aware of them before
+   * trying to import the menus links. Menu import uses drupal_valid_path() in
+   * order to determine if a path is valid. drupal_valid_path() looks into the
+   * menu router table for paths. At this point the menu_router table does not
+   * have any views urls.
+   *
+   * menu_rebuild(); Doesnt work. Nice try!
+   * @param  [type] $install_state [description]
+   */
+  public function save_all_default_views_to_db(&$install_state) {
+    // Load up and save all views to the db.
+    $implements = module_implements('views_default_views');
+    $views = array();
+    foreach ($implements as $module_name) {
+      $views += call_user_func($module_name . "_views_default_views");
+    }
+
+    // Initialize! Alive!
+    foreach ($views as $view) {
+      $view->save(); // this unfortunately enables (turns on) the view as well.
+    }
+
+    drush_log('Saved Views For Menu System.', 'ok');
+  }
+
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Removes all the default views from the DB after the site has been built.
+   * Menu needs them to exist in the DB during the installation process as it
+   * is unable to read the views and page paths from the features when saving
+   * menu items this early in the sites life. A side effect is that all the
+   * default views are enabled when saved to the db and they should not be.
+   * @param  [type] $install_state [description]
+   * @return [type]                [description]
+   */
+  public function remove_all_default_views_from_db(&$install_state) {
+
+    $implements = module_implements('views_default_views');
+    foreach ($implements as $module_name) {
+      $views = call_user_func($module_name . '_views_default_views');
+
+      foreach ($views as $view_name => $view) {
+          $results = db_select('views_view', 'vv')
+              ->fields('vv', array('vid'))
+              ->condition('name', $view_name)
+              ->range(0,1)
+              ->execute()
+              ->fetchAssoc();
+
+          $view->vid = $results['vid'];
+          $view->delete();
+      }
+    }
+
+  }
+
+  // ---------------------------------------------------------------------------
+
+  /**
+  * Create new Menu Position Rule.
+  * @param array $mp_rules A multidimensional array with the following keys:
+  * 'link_title' : Link title in the Main Menu. Assuming depth of 1
+  * 'admin_title' : Administrative title of the Menu Position rule. Human-readable.
+  * 'conditions' : multidimensional array of Menu Position conditions
+  */
+  protected function insert_menu_rule($mp_rule) {
+    module_load_include('inc', 'menu_position', 'menu_position.admin');
+
+    // Get the mlid of the parent link.
+    $result = db_select('menu_links', 'm')
+    ->fields('m', array('mlid'))
+    ->condition('menu_name', 'main-menu')
+    ->condition('depth', 1)
+    ->condition('link_title', $mp_rule['link_title'])
+    ->execute()
+    ->fetchAssoc();
+
+    $plid = $result['mlid'];
+
+
+    // Create the array to populate the rule.
+    $rule = array(
+      'admin_title' => $mp_rule['admin_title'],
+      'conditions' => $mp_rule['conditions'],
+      'menu_name' => 'main-menu',
+      'plid' => $plid,  // "News" item in main menu. Need to look this up programatically
+    );
+
+    // Calling menu_position_add_rule here because we can assume that no rules have been added.
+    menu_position_add_rule($rule);
+  }
+
+  // ---------------------------------------------------------------------------
+
+  /**
+   * Loads the content importer library.
+   */
+  protected function load_sites_content_importer_files(&$install_state) {
+    // Try to use libraries module if available to find the path.
+    if (function_exists('libraries_get_path')) {
+      $library_path = DRUPAL_ROOT . '/' . libraries_get_path('stanford_sites_content_importer');
+    }
+    if (!file_exists($library_path . '/SitesContentImporter.php')) {
+      $library_path = DRUPAL_ROOT . '/sites/all/libraries/stanford_sites_content_importer';
+    }
+    if (!file_exists($library_path . '/SitesContentImporter.php')) {
+      $library_path = DRUPAL_ROOT . '/sites/default/libraries/stanford_sites_content_importer';
+    }
+    $library_path .= "/SitesContentImporter.php";
+    include_once $library_path;
+  }
+
 
 }
