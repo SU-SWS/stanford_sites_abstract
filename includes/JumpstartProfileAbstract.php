@@ -155,6 +155,7 @@ class JumpstartProfileAbstract extends JumpstartProfile {
   public function revert_all_features(&$install_state) {
     if (module_exists('features') || function_exists('features_revert')) {
       drush_log('Reverting all of the features.', 'status');
+      features_rebuild();
       features_revert();
     }
   }
