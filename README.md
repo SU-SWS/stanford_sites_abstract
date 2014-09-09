@@ -1,6 +1,6 @@
 # Stanford Sites Jumpstart
 * **Author:** Shea McKinney <sheamck@stanford.edu>
-* **Changed:** December 19, 2013
+* **Changed:** September, 2014
 
 
 Install profile for Stanford Sites Jumpstart. This profile is a stand alone profile but is intended for use as a parent profile much like how themes can have a base theme and a child theme. This profile goes one further and allows sub profiles to have a sub profile of their own. So you can have something like:
