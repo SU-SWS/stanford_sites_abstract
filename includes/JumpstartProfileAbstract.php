@@ -157,6 +157,12 @@ class JumpstartProfileAbstract extends JumpstartProfile {
       drush_log('Reverting all of the features.', 'status');
       features_rebuild();
       features_revert();
+
+      // Remove a few pesky warning messages. Warnings are not helpful as they
+      // are usually something that is missing in a cache.
+      $messages = drupal_get_messages('warning', TRUE);
+      $message_list = theme('item_list', array('items' => $messages['warning']));
+      watchdog('stanford_install', 'Removed a few warning messages %vars', array('%vars' => $message_list), WATCHDOG_DEBUG);
     }
   }
 
