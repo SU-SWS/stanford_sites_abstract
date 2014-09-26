@@ -4,7 +4,7 @@ description = "An Abstract profile of commonalities to never be installed."
 project status url = https://github.com/SU-SWS/stanford_sites_abstract
 project = stanford_sites_abstract
 core = 7.x
-version = 7.x-4.x
+version = 7.x-4.0
 hidden = TRUE
 
 ; Jumpstart Extra Information
