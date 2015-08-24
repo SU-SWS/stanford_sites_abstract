@@ -470,20 +470,22 @@ abstract class JumpstartProfile {
 
     // Loop through each of the tasks and alter the keys/names so that they
     // have uniqueness.
-    foreach ($tasks as $key => $task) {
+    if (!is_null($tasks)) {
+      foreach ($tasks as $key => $task) {
 
-      $task['class_name'] = $class_name;
+        $task['class_name'] = $class_name;
 
-      if ($task['function']) {
-        $task['class_function'] = $task['function'];
-        $task['function'] = $class_name . "_" . $task['function'];
+        if ($task['function']) {
+          $task['class_function'] = $task['function'];
+          $task['function'] = $class_name . "_" . $task['function'];
+        }
+        else {
+          $task['class_function'] = $key;
+          $task['function'] = $class_name . "_" . $key;
+        }
+
+        $parsed_tasks[$class_name . "_" . $key] = $task;
       }
-      else {
-        $task['class_function'] = $key;
-        $task['function'] = $class_name . "_" . $key;
-      }
-
-      $parsed_tasks[$class_name . "_" . $key] = $task;
     }
 
     $tasks = $parsed_tasks;
