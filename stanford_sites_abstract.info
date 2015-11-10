@@ -4,7 +4,7 @@ description = "An Abstract profile of commonalities to never be installed."
 project status url = https://github.com/SU-SWS/stanford_sites_abstract
 project = stanford_sites_abstract
 core = 7.x
-version = 7.x-4.0
+version = 7.x-4.3
 hidden = TRUE
 
 ; Jumpstart Extra Information
@@ -51,7 +51,5 @@ dependencies[] = entity_token
 files[] = includes/JumpstartProfileInterface.php
 files[] = includes/JumpstartProfile.php
 files[] = includes/JumpstartProfileAbstract.php
-;files[] = includes/libraries/profiler/profiler.inc
-;files[] = includes/libraries/profiler/profiler_api.inc
 files[] = stanford_sites_abstract.install
 files[] = stanford_sites_abstract.profile
